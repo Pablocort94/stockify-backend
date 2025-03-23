@@ -1,18 +1,9 @@
 from flask import Blueprint, request, jsonify
-import psycopg2
+from db import get_db_connection, release_db_connection
 import psycopg2.extras
 
 # Create Blueprint
 screenersearch_bp = Blueprint('screenersearch_bp', __name__)
-
-def get_db_connection():
-    return psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="Rebecca17!",
-        host="localhost",
-        port="5432"
-    )
 
 @screenersearch_bp.route('/screener/search', methods=['POST'])
 def search_stocks():
@@ -52,19 +43,24 @@ def search_stocks():
 
         # Construct and execute the SQL query
         query = f"SELECT * FROM stock_screener_search WHERE {where_clause} LIMIT 100"
-        connection = get_db_connection()
-        cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cursor.execute(query, query_params)
-        results = cursor.fetchall()
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cur.execute(query, query_params)
+        results = cur.fetchall()
 
         # Transform results into a JSON-friendly format
         rows = [dict(row) for row in results]
 
-        # Close the connection
-        cursor.close()
-        connection.close()
-
-        return jsonify({"data": rows, "count": len(rows)})
-
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # Handle any errors that occur
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+        
+    finally:
+        # Ensure the cursor and connection are properly closed
+        if 'cur' in locals():
+            cur.close()
+        release_db_connection(conn)
+
+    return jsonify({"data": rows, "count": len(rows)})
+        
+       

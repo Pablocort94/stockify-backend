@@ -1,18 +1,9 @@
 from flask import Blueprint, jsonify, request
-import psycopg2
+from db import get_db_connection, release_db_connection
 
 # Create the blueprint
 simulationgameresults_bp = Blueprint('simulationgameresults', __name__)
 
-# Database connection function
-def get_db_connection():
-    return psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="Rebecca17!",
-        host="localhost",
-        port="5432"
-    )
 
 # Define the search endpoint
 @simulationgameresults_bp.route('/simulationgameresults', methods=['GET'])
@@ -87,11 +78,14 @@ select 	t1.ticker, calculate_mean((SELECT ARRAY_AGG(net_profit_margin::NUMERIC))
         columns = [desc[0] for desc in cur.description]  # Extract column headers
         data = [dict(zip(columns, row)) for row in rows]
 
-        # Close the database connection
-        cur.close()
-        conn.close()
-
-        return jsonify({'data': data})       
     except Exception as e:
-        # Handle any exceptions and return an error response
-        return jsonify({'error': str(e)}), 500
+        # Handle any errors that occur
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+        
+    finally:
+        # Ensure the cursor and connection are properly closed
+        if 'cur' in locals():
+            cur.close()
+        release_db_connection(conn)
+
+    return jsonify({'data': data})

@@ -1,17 +1,8 @@
-from flask import Blueprint, request, jsonify
-import psycopg2
+from flask import Blueprint, jsonify
+from db import get_db_connection, release_db_connection
 
 # Create a blueprint for stock screener
 graphfields_bp = Blueprint('graph_fields', __name__)
-
-def get_db_connection():
-    return psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="Rebecca17!",
-        host="localhost",
-        port="5432"
-    )
 
 @graphfields_bp.route('/graph_fields', methods=['GET'])
 def get_available_fields():
@@ -34,14 +25,15 @@ def get_available_fields():
         # Extract column names into a list
         fields = [row[0] for row in cur.fetchall()]
 
-        # Close the database connection
-        cur.close()
-        conn.close()
-
-        # Return the list of fields as JSON
-        return jsonify({'fields': fields})
     except Exception as e:
-        # Handle any exceptions and return an error response
-        return jsonify({'error': str(e)}), 500
+        # Handle any errors that occur
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+        
+    finally:
+        # Ensure the cursor and connection are properly closed
+        if 'cur' in locals():
+            cur.close()
+        release_db_connection(conn)
 
+    return jsonify({'fields': fields})
 
