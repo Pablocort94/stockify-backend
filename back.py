@@ -10,7 +10,7 @@ from comparable_graph_predictive_search import graphpredictivesearch_bp
 from comp_advante_score import compadvscore_bp
 from simulationgame import simulationgame_bp
 from simulationgameresults import simulationgameresults_bp
-#from db import get_db_connection, release_db_connection
+from db import get_db_connection, release_db_connection
 
 
 
