@@ -18,6 +18,24 @@ app = Flask(__name__)
 CORS(app)  
 configure_mail(app)
 
+def test_db_connection():
+    try:
+        conn = psycopg2.connect(
+            dbname="postgres",
+            user="postgres",
+            password="Pcortes170694!",
+            host="db.oooaedmiekwdhjuieoqo.supabase.co",
+            port="5432",
+            sslmode="require"
+        )
+        print("✅ Connected successfully from Render!")
+        conn.close()
+    except Exception as e:
+        print("❌ Failed to connect from Render:", e)
+
+# Run the DB connection test
+test_db_connection()
+
 # Register all blueprints
 blueprints = [
     email_bp, stock_bp, screenerfields_bp, screenersearch_bp,
