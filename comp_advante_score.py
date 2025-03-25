@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-import psycopg2
 from db_config import get_db_connection  # Import from db_config.py
 
 # Create a blueprint for stock screener

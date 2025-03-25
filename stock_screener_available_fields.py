@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
-import psycopg2
+from db_config import get_db_connection  # Import from db_config.py
 
 # Create a blueprint for stock screener
 screenerfields_bp = Blueprint("stock_screener_available_fields", __name__)
 
-
+'''
 def get_db_connection():
     return psycopg2.connect(
         dbname="postgres",
@@ -13,7 +13,7 @@ def get_db_connection():
         host="localhost",
         port="5432",
     )
-
+'''
 
 @screenerfields_bp.route("/stock_screener_available_fields", methods=["GET"])
 def get_available_fields():

@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
-import psycopg2
+from db_config import get_db_connection  # Import from db_config.py
 
 # Create the blueprint
 stock_bp = Blueprint("stock", __name__)
 
-
+'''
 # Database connection function
 def get_db_connection():
     return psycopg2.connect(
@@ -14,7 +14,7 @@ def get_db_connection():
         host="localhost",
         port="5432",
     )
-
+'''
 
 # Define the search endpoint
 @stock_bp.route("/search_stocks", methods=["GET"])
