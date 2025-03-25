@@ -10,7 +10,8 @@ from comparable_graph_predictive_search import graphpredictivesearch_bp
 from comp_advante_score import compadvscore_bp
 from simulationgame import simulationgame_bp
 from simulationgameresults import simulationgameresults_bp
-import psycopg2
+#import psycopg2
+from db_config import get_db_connection  # Import the function
 
 
 app = Flask(__name__)
@@ -29,7 +30,7 @@ app.register_blueprint(compadvscore_bp, url_prefix="/api")
 app.register_blueprint(simulationgame_bp, url_prefix="/api")
 app.register_blueprint(simulationgameresults_bp, url_prefix="/api")
 
-
+'''
 def get_db_connection():
     conn = psycopg2.connect(
         dbname="postgres",
@@ -39,7 +40,7 @@ def get_db_connection():
         port="5432",
     )
     return conn
-
+'''
 
 @app.route("/api/stocks/<string:stock_name>/<string:table_name>", methods=["GET"])
 def get_table_data(

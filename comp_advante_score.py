@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import psycopg2
-
+from db_config import get_db_connection  # Import from db_config.py
 
 # Create a blueprint for stock screener
 
@@ -16,10 +16,11 @@ def get_db_connection():
         port="5432",
         
     )
-'''
+
 def get_db_connection():
     conn_str = "postgresql://postgres.oooaedmiekwdhjuieoqo:Pcortes170694!@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
     return psycopg2.connect(conn_str)
+'''
 
 @compadvscore_bp.route("/competitive_advantage_score", methods=["GET"])
 def get_available_fields():
