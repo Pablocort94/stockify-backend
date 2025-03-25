@@ -5,3 +5,5 @@ venv/
 *.sqlite3
 *.ipynb
 venvstockify/
+db.py
+*copy*

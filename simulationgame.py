@@ -1,20 +1,32 @@
 from flask import Blueprint, jsonify, request
-from db import get_db_connection, release_db_connection
+import psycopg2
 
 # Create the blueprint
-simulationgame_bp = Blueprint('simulationgame', __name__)
+simulationgame_bp = Blueprint("simulationgame", __name__)
+
+
+# Database connection function
+def get_db_connection():
+    return psycopg2.connect(
+        dbname="postgres",
+        user="postgres",
+        password="Rebecca17!",
+        host="localhost",
+        port="5432",
+    )
+
 
 # Define the search endpoint
-@simulationgame_bp.route('/simulationgame', methods=['GET'])
+@simulationgame_bp.route("/simulationgame", methods=["GET"])
 def simulationgame():
     """
     Endpoint to fetch column names from the 'stock_screener_search' view.
     """
     try:
         # Extract target_year from query parameters
-        target_year = request.args.get('target_year', type=int)
+        target_year = request.args.get("target_year", type=int)
         if not target_year:
-            return jsonify({'error': 'target_year query parameter is required'}), 400
+            return jsonify({"error": "target_year query parameter is required"}), 400
 
         # Connect to the database
         conn = get_db_connection()
@@ -62,14 +74,11 @@ GROUP BY
         columns = [desc[0] for desc in cur.description]  # Extract column headers
         data = [dict(zip(columns, row)) for row in rows]
 
-    except Exception as e:
-        # Handle any errors that occur
-        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
-        
-    finally:
-        # Ensure the cursor and connection are properly closed
-        if 'cur' in locals():
-            cur.close()
-        release_db_connection(conn)
+        # Close the database connection
+        cur.close()
+        conn.close()
 
-    return jsonify({'data': data})
+        return jsonify({"data": data})
+    except Exception as e:
+        # Handle any exceptions and return an error response
+        return jsonify({"error": str(e)}), 500
