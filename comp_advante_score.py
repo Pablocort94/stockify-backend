@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
 import psycopg2
 
+
 # Create a blueprint for stock screener
 
 compadvscore_bp = Blueprint("competitive_advantage_score", __name__)
 
-
+'''
 def get_db_connection():
     return psycopg2.connect(
         dbname="postgres",
@@ -13,8 +14,12 @@ def get_db_connection():
         password="Pcortes170694!",
         host="db.oooaedmiekwdhjuieoqo.supabase.co",
         port="5432",
+        
     )
-
+'''
+def get_db_connection():
+    conn_str = "postgresql://postgres.oooaedmiekwdhjuieoqo:Pcortes170694!@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
+    return psycopg2.connect(conn_str)
 
 @compadvscore_bp.route("/competitive_advantage_score", methods=["GET"])
 def get_available_fields():
