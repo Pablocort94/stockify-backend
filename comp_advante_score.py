@@ -10,8 +10,8 @@ def get_db_connection():
     return psycopg2.connect(
         dbname="postgres",
         user="postgres",
-        password="Rebecca17!",
-        host="localhost",
+        password="Pcortes170694!",
+        host="db.oooaedmiekwdhjuieoqo.supabase.co",
         port="5432",
     )
 
